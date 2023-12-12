@@ -120,7 +120,7 @@ str(q3_2019)
 str(q4_2019)
 ```
 
-## Cleaning the Data
+## DATA CLEANING- RENAMING UPLOADED DATA
 
 The data in 2019 was renamed.
 
@@ -169,7 +169,8 @@ The data in 2019 was renamed.
 ```
 
 ## DATA MERGING
- Data of all the month in 2020 and 2021 will be merged into one as all_trips_2020 and all_trips_2021 respectively and all the quarters in 2019 as all_trip_2019.
+
+ Data of all the month in 2020 and 2021 will be merged into one as all_trips_2020 and all_trips_2021 respectively and all the quarters in 2019 as all_trip_2019 for appropriate comparison.
  
 ```{r DATA MERGING, message=FALSE, warning=FALSE}
 all_trips_2019 <- bind_rows(Q1_2019,Q2_2019,Q3_2019,Q4_2019)
@@ -182,19 +183,23 @@ all_trips_2021 <- bind_rows(X202101, X202102,
                        X202110, X202111, X202112)
 ```
 
-## DATA CLEANING 2
-The merged data, all_trips_2019,all_trips_2020,and all_trips_2021 will be cleaned using these code chunk:
+## DATA MUTATION
+The merged data, all_trips_2019,all_trips_2020,and all_trips_2021 will be mutated to retrieve data that provide answers to the research question.
 
-```{r DATA CLEANING 2, message=FALSE, warning=FALSE}
+
+```{r DATA MUTATION, message=FALSE, warning=FALSE}
 library(lubridate)
+
 ## change the string in rideable_type of 2019 to suit rideable_type_2020 and 2021)
+
 mutate(all_trips_2019, ride_id = as.character(ride_id, rideable_type = as.character(rideable_type)))
 all_trips_2019 <- all_trips_2019 %>%
   mutate(member_casual = recode(member_casual
                                 ,"Subscriber" = "member"
                                 ,"Customer" = "casual"))
 
-## CREATE NEW COLS SUCH AS DATE,DAY, MONTH, YEAR AND DAY OF WEEK
+## Create new columns such as DATE,DAY, MONTH, YEAR AND DAY OF WEEK
+
 all_trips_2019$date <- as.Date(all_trips_2019$started_at) #The default format is yyyy-mm-dd
 all_trips_2019$month <- format(as.Date(all_trips_2019$date), "%m")
 all_trips_2019$day <- format(as.Date(all_trips_2019$date), "%d")
@@ -215,11 +220,14 @@ is.factor(all_trips_2021$ride_length)
 all_trips_2021$ride_length <- as.numeric(as.character(all_trips_2021$ride_length))
 is.numeric(all_trips_2021$ride_length)
 
-## remove bad data
+## Remove bad data
+
 all_trips_2019_v2 <- all_trips_2019[!(all_trips_2019$start_station_name == "HQ QR" | all_trips_2019$ride_length<0),]
 all_trips_2020_v2 <- all_trips_2020[!(all_trips_2020$start_station_name == "HQ QR" | all_trips_2020$ride_length<0),]
 all_trips_2021_v2 <- all_trips_2021[!(all_trips_2021$start_station_name == "HQ QR" | all_trips_2021$ride_length<0),]
-## CREATE NEW COLS SUCH AS DATE,DAY, MONTH, YEAR AND DAY OF WEEK
+
+## Create new columns such as  DATE,DAY, MONTH, YEAR AND DAY OF WEEK for year 2020 and 2021.
+
 all_trips_2020_v2$date <- as.Date(all_trips_2020_v2$started_at) 
 #The default format is yyyy-mm-dd
 all_trips_2020_v2$month <- format(as.Date(all_trips_2020_v2$date), "%m")
@@ -234,7 +242,8 @@ all_trips_2021_v2$day <- format(as.Date(all_trips_2021_v2$date), "%d")
 all_trips_2021_v2$year <- format(as.Date(all_trips_2021_v2$date), "%Y")
 all_trips_2021_v2$day_of_week <- format(as.Date(all_trips_2021_v2$date), "%A")
 
-## select only the needed by deselecting unwanted data
+## End data cleaning by selecting only the needed by deselecting unwanted data
+
 all_trips_2019_v3 <- all_trips_2019_v2 %>%
   select(-c("birthyear", "gender", "01 - Rental Details Duration In Seconds Uncapped", "05 - Member Details Member Birthday Year", "Member Gender", "tripduration"))
 
