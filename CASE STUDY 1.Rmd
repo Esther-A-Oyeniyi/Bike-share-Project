@@ -120,11 +120,13 @@ str(q3_2019)
 str(q4_2019)
 ```
 
-## DATA CLEANING- RENAMING UPLOADED DATA
+## STEP2: DATA CLEANING
+
+#Rename uploaded data
 
 The data in 2019 was renamed.
 
-```{r Data Cleaning, message=FALSE, warning=FALSE}
+```{r Step 2 Data Cleaning, message=FALSE, warning=FALSE}
 (Q4_2019 <- rename(q4_2019
                    ,ride_id = trip_id
                    ,rideable_type = bikeid
@@ -168,11 +170,11 @@ The data in 2019 was renamed.
 
 ```
 
-## DATA MERGING
+# Merge Data
 
  Data of all the month in 2020 and 2021 will be merged into one as all_trips_2020 and all_trips_2021 respectively and all the quarters in 2019 as all_trip_2019 for appropriate comparison.
  
-```{r DATA MERGING, message=FALSE, warning=FALSE}
+```{r Merge Data, message=FALSE, warning=FALSE}
 all_trips_2019 <- bind_rows(Q1_2019,Q2_2019,Q3_2019,Q4_2019)
 all_trips_2020 <- bind_rows(Q1_2020, X202004, X202005, X202006, 
                             X202007, X202008, X202009, X202010,
@@ -183,14 +185,15 @@ all_trips_2021 <- bind_rows(X202101, X202102,
                        X202110, X202111, X202112)
 ```
 
-## DATA MUTATION
+# Mutate Data
+
 The merged data, all_trips_2019,all_trips_2020,and all_trips_2021 will be mutated to retrieve data that provide answers to the research question.
 
 
-```{r DATA MUTATION, message=FALSE, warning=FALSE}
+```{r Mutate Data, message=FALSE, warning=FALSE}
 library(lubridate)
 
-## change the string in rideable_type of 2019 to suit rideable_type_2020 and 2021)
+#change the string in rideable_type of 2019 to suit rideable_type_2020 and 2021)
 
 mutate(all_trips_2019, ride_id = as.character(ride_id, rideable_type = as.character(rideable_type)))
 all_trips_2019 <- all_trips_2019 %>%
@@ -198,7 +201,7 @@ all_trips_2019 <- all_trips_2019 %>%
                                 ,"Subscriber" = "member"
                                 ,"Customer" = "casual"))
 
-## Create new columns such as DATE,DAY, MONTH, YEAR AND DAY OF WEEK
+# Create new columns such as DATE,DAY, MONTH, YEAR AND DAY OF WEEK
 
 all_trips_2019$date <- as.Date(all_trips_2019$started_at) #The default format is yyyy-mm-dd
 all_trips_2019$month <- format(as.Date(all_trips_2019$date), "%m")
@@ -220,13 +223,13 @@ is.factor(all_trips_2021$ride_length)
 all_trips_2021$ride_length <- as.numeric(as.character(all_trips_2021$ride_length))
 is.numeric(all_trips_2021$ride_length)
 
-## Remove bad data
+# Remove bad data
 
 all_trips_2019_v2 <- all_trips_2019[!(all_trips_2019$start_station_name == "HQ QR" | all_trips_2019$ride_length<0),]
 all_trips_2020_v2 <- all_trips_2020[!(all_trips_2020$start_station_name == "HQ QR" | all_trips_2020$ride_length<0),]
 all_trips_2021_v2 <- all_trips_2021[!(all_trips_2021$start_station_name == "HQ QR" | all_trips_2021$ride_length<0),]
 
-## Create new columns such as  DATE,DAY, MONTH, YEAR AND DAY OF WEEK for year 2020 and 2021.
+# Create new columns such as  DATE,DAY, MONTH, YEAR AND DAY OF WEEK for year 2020 and 2021.
 
 all_trips_2020_v2$date <- as.Date(all_trips_2020_v2$started_at) 
 #The default format is yyyy-mm-dd
@@ -242,7 +245,7 @@ all_trips_2021_v2$day <- format(as.Date(all_trips_2021_v2$date), "%d")
 all_trips_2021_v2$year <- format(as.Date(all_trips_2021_v2$date), "%Y")
 all_trips_2021_v2$day_of_week <- format(as.Date(all_trips_2021_v2$date), "%A")
 
-## End data cleaning by selecting only the needed by deselecting unwanted data
+# End data cleaning by selecting only the needed by deselecting unwanted data
 
 all_trips_2019_v3 <- all_trips_2019_v2 %>%
   select(-c("birthyear", "gender", "01 - Rental Details Duration In Seconds Uncapped", "05 - Member Details Member Birthday Year", "Member Gender", "tripduration"))
@@ -255,30 +258,48 @@ all_trips_2021_v3 <- all_trips_2021_v2 %>%
 
 ```
 
-## DATA ANALYSIS
-This will be done separately for each of the year
+## STEP3: EXPLORATORY DATA ANALYSIS(EDA)
+This will be done separately to answer the following questions.
 
-```{r ANALYSIS OF THE CLEANED DATA, message=FALSE, warning=FALSE}
+```{r DATA ANALYSIS, message=FALSE, warning=FALSE}
 
 #YEAR 2019
 summary(all_trips_2019_v3$ride_length)
-# Compare members and casual users
+
+#Q1: What is the average trip length of members and casual users in 2019? 
+
 aggregate(all_trips_2019_v3$ride_length ~ all_trips_2019_v3$member_casual, FUN = mean)
-aggregate(all_trips_2019_v3$ride_length ~ all_trips_2019_v3$member_casual, FUN = median)
+
+#Q2: What is the maximum trip length of members and casual users in 2019? 
+
 aggregate(all_trips_2019_v3$ride_length ~ all_trips_2019_v3$member_casual, FUN = max)
+
+#Q3: What is the minimum trip length of members and casual users in 2019? 
+
 aggregate(all_trips_2019_v3$ride_length ~ all_trips_2019_v3$member_casual, FUN = min)
-# The average ride time by each day for members vs casual users
+
+# Q4: What is the average daily ride time  of members compared to casual users in 2019?
+
 aggregate(all_trips_2019_v3$ride_length ~ all_trips_2019_v3$member_casual + all_trips_2019_v3$day_of_week, FUN = mean)
+
 # Notice that the days of the week are out of order. I'll fix that.
+
 all_trips_2019_v3$day_of_week <- ordered(all_trips_2019_v3$day_of_week, levels=c("Sunday", "Monday",
 "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))
-# The average ride time by each day for members vs casual users
+
+# The average ride time by each day for members vs casual users is given below.
+
 aggregate(all_trips_2019_v3$ride_length ~ all_trips_2019_v3$member_casual + all_trips_2019_v3$day_of_week, FUN = mean)
-# analyze ridership data by type and day_of_week
+
+# Use pipe operations to analyze ridership data by customer type (members vs. casual) and day_of_week
+
+#Q5: What is the number of rides and average duration of members vs. casual users in 2019?
+
 all_trips_2019_v3 %>%
   group_by(member_casual, day_of_week) %>% #groups by user type and day_of_week
-  summarise(number_of_rides = n() #calculates the number of rides and average duration
-            ,average_duration = mean(ride_length)) %>% # calculates the average duration
+  summarise(number_of_rides = n() 
+            ,average_duration = mean(ride_length)) %>% 
+# calculates the average duration
   arrange(member_casual, day_of_week) # sorts
 # visualize the number of rides by rider type
 all_trips_2019_v3 %>%
@@ -288,7 +309,9 @@ all_trips_2019_v3 %>%
   arrange(member_casual, day_of_week, na = TRUE) %>%
   ggplot(aes(x = day_of_week, y = number_of_rides, fill = member_casual)) +
   geom_col(position = "dodge")
-# Create a visualization for average duration
+
+# Create a visualization for average duration of 
+
 all_trips_2019_v3 %>%
   group_by(member_casual, day_of_week) %>%
   summarise(number_of_rides = n()
