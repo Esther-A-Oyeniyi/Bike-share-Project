@@ -14,9 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## STEP 1: UPLOADING THE DATA
 
 The data was uploaded using and the data structure was specified. For example, column types were set to datetime(dttm), double (dbl), strings, etc.
-The 12 months in the year 2020 and 2021 were .Also, the data for year 2019 were in quarters and so were uploaded using a different code.
+The 12 months in the year 2020 and 2021 were grouped into quarters. However, the data for year 2019 were in quarters and so were uploaded using a different code.
 
-#2019
 
 ```{r STEP1, message=FALSE, warning=FALSE}
 library(tidyverse)
