@@ -1,6 +1,6 @@
 ---
-title: "Case Study on How Annual Subscribers differ from Casual Subscribers"
-author: "Esther Anthony Oyeniyi"
+title: "How Bike-share ride Members differ from Casual Bike-share Subscribers"
+
 date: "`r Sys.Date()`"
 output:
   pdf_document: default
@@ -13,8 +13,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## STEP 1: UPLOADING THE DATA
 
-In this step, the data was uploaded using a code chunk that automatically sets the data structure to what it is required to be. for example, column types were set to datetime(dttm), double (dbl), strings, etc.This was done for the month in the year 2020 and 2021 by changing the figures as they had similar format.Meanwhile, the data for year 2019 were in quarters and so were uploaded using a different code.
-The embedded R code chunk is like this:
+The data was uploaded using and the data structure was specified. For example, column types were set to datetime(dttm), double (dbl), strings, etc.
+The 12 months in the year 2020 and 2021 were .Also, the data for year 2019 were in quarters and so were uploaded using a different code.
+
+#2019
 
 ```{r STEP1, message=FALSE, warning=FALSE}
 library(tidyverse)
