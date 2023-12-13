@@ -209,15 +209,18 @@ all_trips_2019$day <- format(as.Date(all_trips_2019$date), "%d")
 all_trips_2019$year <- format(as.Date(all_trips_2019$date), "%Y")
 all_trips_2019$day_of_week <- format(as.Date(all_trips_2019$date), "%A")
 
+Q1: What is the total trip length made in each year?
 
 all_trips_2019$ride_length <- difftime(all_trips_2019$ended_at,all_trips_2019$started_at)
 is.factor(all_trips_2019$ride_length)
 all_trips_2019$ride_length <- as.numeric(as.character(all_trips_2019$ride_length))
 is.numeric(all_trips_2019$ride_length)
+
 all_trips_2020$ride_length <- difftime(all_trips_2020$ended_at,all_trips_2020$started_at)
 is.factor(all_trips_2020$ride_length)
 all_trips_2020$ride_length <- as.numeric(as.character(all_trips_2020$ride_length))
 is.numeric(all_trips_2020$ride_length)
+
 all_trips_2021$ride_length <- difftime(all_trips_2021$ended_at,all_trips_2021$started_at)
 is.factor(all_trips_2021$ride_length)
 all_trips_2021$ride_length <- as.numeric(as.character(all_trips_2021$ride_length))
